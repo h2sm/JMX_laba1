@@ -1,8 +1,8 @@
 package jmxtest;
 
 public class TaskManager implements Runnable {
-    String classpath;
-    String mainClass;
+    private String classpath;
+    private String mainClass;
 
     public TaskManager(String cp, String mC) {
         this.classpath=cp;
@@ -11,6 +11,7 @@ public class TaskManager implements Runnable {
 
     @Override
     public void run() {
-
+        System.out.println("Hello bitch");
     }
+
 }

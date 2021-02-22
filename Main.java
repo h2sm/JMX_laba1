@@ -10,9 +10,7 @@ public class Main {
        ManagementFactory.getPlatformMBeanServer().registerMBean(
                settings, new ObjectName("jmxtest:type=Test"));
        while (true){
-           for (int i = 0; i <1 ; i++) {
-               System.out.println("Жду команду");
-           }
+
        }
     }
 }

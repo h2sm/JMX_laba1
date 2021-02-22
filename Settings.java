@@ -18,6 +18,7 @@ public class Settings implements HelloMXBean{
         ScheduledFuture schedule = Executors.newScheduledThreadPool(1).
                 scheduleAtFixedRate(new TaskManager(classpath, mainClass), 0, period, TimeUnit.SECONDS);//планировщик
         scheduledList.put(name, schedule);
+        System.out.println(scheduledList);
     }
 
     @Override
@@ -28,12 +29,6 @@ public class Settings implements HelloMXBean{
     @Override
     public String status(String name) {
         return "is cancelled " + scheduledList.get(name).isCancelled();//доделать!
-    }
-    private ClassLoader newLoader(String dir) throws Exception {
-        var path = Path.of(dir);
-        if (!Files.isDirectory(path))
-            throw new RuntimeException();
-        return new URLClassLoader(new URL[] { path.toUri().toURL() });
     }
 
 }
