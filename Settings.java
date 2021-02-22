@@ -14,6 +14,7 @@ public class Settings implements HelloMXBean{
                 scheduleAtFixedRate(new TaskManager(classpath, mainClass), 0, period, TimeUnit.SECONDS);//планировщик
         scheduledList.put(name, schedule);
 
+
     }
 
     @Override
@@ -24,13 +25,15 @@ public class Settings implements HelloMXBean{
     @Override
     public String status(String name) {
         System.out.println(scheduledList.get(name));
-        if (scheduledList.get(name).isCancelled()){
-            return name + " was cancelled";
+        if (scheduledList.get(name).isCancelled() | scheduledList.get(name).isDone() ){
+            return "task wasn't found";
         }
-        if (scheduledList.get(name).isDone()){
-            return name + " is done";
+        if (!scheduledList.get(name).isDone()|!scheduledList.get(name).isCancelled()){
+            return "task is running";
         }
-        return  scheduledList.get(name).toString();
+        else {
+            return scheduledList.get(name).toString();
+        }
     }
 
 }

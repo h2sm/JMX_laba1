@@ -4,15 +4,18 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.Executors;
 
 public class TaskManager implements Runnable {
     private String classpath;
     private String mainClass;
     private ClassLoader loader;
+    String e;
 
     public TaskManager(String cp, String mC) {
         this.classpath=cp;
         this.mainClass=mC;
+
     }
 
     @Override
@@ -23,7 +26,7 @@ public class TaskManager implements Runnable {
             clazz.getMethod(mainClass,String[].class).invoke(null);
 
         } catch (Exception exception) {
-            exception.printStackTrace();
+            System.out.println(exception.getCause());
         }
     }
     private ClassLoader newLoader(String dir) throws Exception {
