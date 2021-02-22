@@ -1,9 +1,5 @@
 package jmxtest;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -11,14 +7,13 @@ import java.util.concurrent.TimeUnit;
 
 public class Settings implements HelloMXBean{
     private HashMap<String,ScheduledFuture> scheduledList = new HashMap<>();//список заданий
-    private ClassLoader loader;
 
     @Override
     public void submit(String name, String classpath, String mainClass, int period) throws Exception {
         ScheduledFuture schedule = Executors.newScheduledThreadPool(1).
                 scheduleAtFixedRate(new TaskManager(classpath, mainClass), 0, period, TimeUnit.SECONDS);//планировщик
         scheduledList.put(name, schedule);
-        System.out.println(scheduledList);
+
     }
 
     @Override
@@ -28,7 +23,14 @@ public class Settings implements HelloMXBean{
 
     @Override
     public String status(String name) {
-        return "is cancelled " + scheduledList.get(name).isCancelled();//доделать!
+        System.out.println(scheduledList.get(name));
+        if (scheduledList.get(name).isCancelled()){
+            return name + " was cancelled";
+        }
+        if (scheduledList.get(name).isDone()){
+            return name + " is done";
+        }
+        return  scheduledList.get(name).toString();
     }
 
 }
