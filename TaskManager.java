@@ -10,12 +10,13 @@ public class TaskManager implements Runnable {
     private String classpath;
     private String mainClass;
     private ClassLoader loader;
+    private String[] args;
     String e;
 
-    public TaskManager(String cp, String mC) {
+    public TaskManager(String cp, String mC, String[] args) {
         this.classpath=cp;
         this.mainClass=mC;
-
+        this.args=args;
     }
 
     @Override
@@ -23,9 +24,10 @@ public class TaskManager implements Runnable {
         try {
             var loader = newLoader(classpath);
             var clazz =loader.loadClass(mainClass);
-            clazz.getMethod(mainClass,String[].class).invoke(null);
+            clazz.getMethod("main",String[].class).invoke(null, (Object) args);
 
         } catch (Exception exception) {
+            exception.printStackTrace();
             System.out.println(exception.getCause());
         }
     }
