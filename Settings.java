@@ -7,20 +7,27 @@ import java.util.concurrent.TimeUnit;
 
 public class Settings implements HelloMXBean{
     private HashMap<String,ScheduledFuture> scheduledList = new HashMap<>();//список заданий
-    String[] args;
+    private String[] args;
     public Settings(String[] args){
         this.args = args;
     }
     @Override
-    public void submit(String name, String classpath, String mainClass, int period) throws Exception {
+    public void submit(String name, String classpath, String mainClass, int period) {
         ScheduledFuture schedule = Executors.newScheduledThreadPool(1).
-                scheduleAtFixedRate(new TaskManager(classpath, mainClass,args), 0, period, TimeUnit.SECONDS);//планировщик
+                scheduleAtFixedRate(new TaskManager(classpath, mainClass, args), 0, period, TimeUnit.SECONDS);//планировщик
         scheduledList.put(name, schedule);
     }
 
     @Override
-    public void cancel(String name) {
+    public String cancel(String name) {
         scheduledList.get(name).cancel(true);
+        if (scheduledList.containsKey(name)){
+            scheduledList.remove(name);
+            return "task was deleted";
+        }
+        else {
+            return "no such a task";
+        }
     }
 
     @Override

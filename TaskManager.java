@@ -1,17 +1,17 @@
 package jmxtest;
-
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.Executors;
+import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TaskManager implements Runnable {
     private String classpath;
     private String mainClass;
-    private ClassLoader loader;
     private String[] args;
-    String e;
+    private Logger logger;
 
     public TaskManager(String cp, String mC, String[] args) {
         this.classpath=cp;
@@ -19,6 +19,12 @@ public class TaskManager implements Runnable {
         this.args=args;
     }
 
+    private ClassLoader newLoader(String dir) throws Exception {
+        var path = Path.of(dir);
+        if (!Files.isDirectory(path))
+            throw new RuntimeException();
+        return new URLClassLoader(new URL[]{path.toUri().toURL()});
+    }
     @Override
     public void run() {
         try {
@@ -27,15 +33,8 @@ public class TaskManager implements Runnable {
             clazz.getMethod("main",String[].class).invoke(null, (Object) args);
 
         } catch (Exception exception) {
-            exception.printStackTrace();
-            System.out.println(exception.getCause());
+            logger.log(Level.WARNING, (Supplier<String>) exception);
         }
-    }
-    private ClassLoader newLoader(String dir) throws Exception {
-        var path = Path.of(dir);
-        if (!Files.isDirectory(path))
-            throw new RuntimeException();
-        return new URLClassLoader(new URL[]{path.toUri().toURL()});
     }
 
 }
