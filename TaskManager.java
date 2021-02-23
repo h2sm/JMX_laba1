@@ -33,7 +33,7 @@ public class TaskManager implements Runnable {
             clazz.getMethod("main",String[].class).invoke(null, (Object) args);
 
         } catch (Exception exception) {
-            logger.log(Level.WARNING, (Supplier<String>) exception);
+            logger.log(Level.WARNING, exception.toString());
         }
     }
 

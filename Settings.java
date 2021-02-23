@@ -32,16 +32,19 @@ public class Settings implements HelloMXBean{
 
     @Override
     public String status(String name) {
-        System.out.println(scheduledList.get(name));
-        if (scheduledList.get(name).isCancelled() | scheduledList.get(name).isDone() ){
-            return "task wasn't found";
-        }
-        if (!scheduledList.get(name).isDone()|!scheduledList.get(name).isCancelled()){
-            return "task is running";
-        }
-        else {
+//        if ((scheduledList.get(name).isCancelled() | scheduledList.get(name).isDone() | !scheduledList.containsKey(name))){//я не понимаю почему эта хрень не работает
+//            return "task wasn't found";
+//        }
+//        if (!scheduledList.get(name).isDone()|!scheduledList.get(name).isCancelled()){
+//            return "task is running";
+//        }
+//        else {
+            String bufer = scheduledList.get(name).toString();
+            bufer.split(".");
+            System.out.println(bufer);
+
             return scheduledList.get(name).toString();
-        }
+        //}
     }
 
     @Override
