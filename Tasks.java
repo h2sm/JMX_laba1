@@ -3,8 +3,8 @@ package jmxtest;
 import java.util.concurrent.ScheduledFuture;
 
 public class Tasks {
-    private String name;
-    private ScheduledFuture<?> scheduledFuture;
+    private final String name;
+    private final ScheduledFuture<?> scheduledFuture;
     private String status;
 
     public Tasks(String name, ScheduledFuture<?> sF, String status){
@@ -29,15 +29,9 @@ public class Tasks {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
-        this.scheduledFuture = scheduledFuture;
-    }
+    
 }

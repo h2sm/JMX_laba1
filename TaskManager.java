@@ -5,9 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class TaskManager implements Runnable {
-    private String classpath;
-    private String mainClass;
-    private String[] args;
+    private final String classpath;
+    private final String mainClass;
+    private final String[] args;
 
     public TaskManager(String cp, String mC, String[] args) {
         this.classpath=cp;

@@ -20,7 +20,8 @@ public class Settings implements HelloMXBean {
     public void submit(String name, String classpath, String mainClass, int period) {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         try {
-            ScheduledFuture<?> future = scheduledExecutorService.scheduleAtFixedRate(new TaskManager(classpath, mainClass, args), 0, period, SECONDS);
+            ScheduledFuture<?> future = scheduledExecutorService
+                    .scheduleAtFixedRate(new TaskManager(classpath, mainClass, args), 0, period, SECONDS);
             tasks.add(new Tasks(name, future, "running"));
         } catch (Exception e) {
             StringWriter errors = new StringWriter();
