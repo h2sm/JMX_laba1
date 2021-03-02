@@ -8,11 +8,17 @@ public class TaskManager implements Runnable {
     private final String classpath;
     private final String mainClass;
     private final String[] args;
+    private String exc = "OK";
+
 
     public TaskManager(String cp, String mC, String[] args) {
         this.classpath=cp;
         this.mainClass=mC;
         this.args=args;
+    }
+
+    public String statusOfRunnable(){//статус, если что-то пошло не так во время рантайма
+        return exc;
     }
 
     private ClassLoader newLoader(String dir) throws Exception {
@@ -29,8 +35,8 @@ public class TaskManager implements Runnable {
             clazz.getMethod("main",String[].class).invoke(null, (Object) args);
 
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            exception.printStackTrace();
+            exc = exception.getClass().getSimpleName();
+            System.out.println("что-то пошло не так....");
         }
     }
 }
