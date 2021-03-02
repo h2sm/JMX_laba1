@@ -35,6 +35,7 @@ public class TaskManager implements Runnable {
             clazz.getMethod("main",String[].class).invoke(null, (Object) args);
 
         } catch (Exception exception) {
+            exception.printStackTrace();
             exc = exception.getClass().getSimpleName();
             System.out.println("что-то пошло не так....");
         }

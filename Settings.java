@@ -10,6 +10,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class Settings implements HelloMXBean {
     private ArrayList<Tasks> tasks = new ArrayList<>();
     private final String[] args;
+    private TaskManager taskManager;
+    private  ScheduledFuture<?> future;
 
     public Settings(String[] args) {
         this.args = args;
@@ -19,15 +21,19 @@ public class Settings implements HelloMXBean {
     public void submit(String name, String classpath, String mainClass, int period) {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         try {
-            TaskManager taskManager = new TaskManager(classpath,mainClass,args);//создаем новое задание
-            ScheduledFuture<?> future = scheduledExecutorService.scheduleAtFixedRate(taskManager, 0, period, SECONDS);//создаем новый executor
+            taskManager = new TaskManager(classpath,mainClass,args);//создаем новое задание
+            future = scheduledExecutorService.scheduleAtFixedRate(taskManager, 0, period, SECONDS);//создаем новый executor
             tasks.add(new Tasks(name, future, "running", taskManager));//присваиваем статус
-        } catch (Exception e) {
-            String exc = e.getClass().getSimpleName();
+
+        } catch (Exception e) {//если появляются иные исключение
+            tasks.add(new Tasks(name, future, e.getClass().getSimpleName(), taskManager));//сохраняем неудачный запуск
+            System.out.println("Error in initializing");
+        }
+        if (!taskManager.statusOfRunnable().equals("OK")){//если программа не запустилась
             for (Tasks task : tasks){
-                if (task.getName().equals(name)) {
-                    task.getScheduledFuture().cancel(true);//отменяем
-                    task.setStatus(exc);//устанавливаем статус если что-то пошло не так во время запуска
+                if (task.getName().equals(name)){
+                    task.getScheduledFuture().cancel(true);
+                    task.setStatus(task.getStatusOfRunnable());
                 }
             }
         }
@@ -37,8 +43,9 @@ public class Settings implements HelloMXBean {
     public String cancel(String name) {
         for (Tasks task : tasks) {
             if (task.getName().equals(name)) {
-                task.getScheduledFuture().cancel(true);
+                task.getScheduledFuture().cancel(true);//отменяем задание
                 if (!task.getStatusOfRunnable().equals("OK")){//если что-то пошло не так при завершении
+                    System.out.println("кансел " + task.getStatusOfRunnable());
                     task.setStatus(task.getStatusOfRunnable());
                     return "task was cancelled with some errors";
                 }
@@ -53,9 +60,6 @@ public class Settings implements HelloMXBean {
         for (Tasks task : tasks){
             if (task.getName().equals(name)) {//если что-то пошло не так во время запуска
                 return task.getStatus();
-            }
-            if (!task.getStatusOfRunnable().equals("OK")){//если что-то пошло не так во время выполнения приложения
-                return task.getStatusOfRunnable();
             }
         }
         return "not found";
